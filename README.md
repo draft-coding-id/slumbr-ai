@@ -6,8 +6,8 @@ API ini dibuat menggunakan Flask untuk melakukan prediksi kualitas tidur ("Baik"
 
 1.  **Clone repositori ini:**
     ```bash
-    git clone [https://github.com/draft-coding-id/slumbr-ai.git](https://github.com/draft-coding-id/slumbr-ai.git)
-    cd REPO_ANDA
+    git clone https://github.com/draft-coding-id/slumbr-ai.git
+    cd slumbr-ai
     ```
 
 2.  **Buat dan aktifkan virtual environment:**
