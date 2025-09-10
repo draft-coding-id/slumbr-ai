@@ -1,0 +1,19 @@
+# Virtual Environment
+# Folder ini berisi semua library yang diinstal dan tidak perlu di-upload
+venv/
+.venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# File spesifik OS/Editor
+.DS_Store
+.vscode/
+.idea/
+
+# File environment (jika nanti Anda pakai)
+# File ini biasanya berisi kunci API atau password
+.env
