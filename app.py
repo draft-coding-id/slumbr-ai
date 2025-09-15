@@ -7,13 +7,9 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# 2. Muat Model Machine Learning Menggunakan joblib
+# 2. Muat Model Machine Learning
 try:
-    # Pastikan file .pkl berada di folder yang sama dengan app.py
     model = joblib.load('random_forest_psqi_model_terbaik.pkl')
-except FileNotFoundError:
-    print("File model tidak ditemukan!")
-    model = None
 except Exception as e:
     print(f"Error saat memuat model: {e}")
     model = None
@@ -51,8 +47,8 @@ def calculate_comp3(p4_hours):
 
 def calculate_comp4(row):
     try:
-        bed_time = pd.to_datetime(row['P1'], format='%I:%M:%S %p', errors='coerce')
-        wake_time = pd.to_datetime(row['P3'], format='%I:%M:%S %p', errors='coerce')
+        bed_time = pd.to_datetime(row['P1'], format='%H:%M:%S', errors='coerce')
+        wake_time = pd.to_datetime(row['P3'], format='%H:%M:%S', errors='coerce')
 
         if pd.isna(bed_time) or pd.isna(wake_time):
             return 3 
@@ -127,12 +123,32 @@ def predict():
         
         model_input = input_df[features_for_model]
         prediction = model.predict(model_input)
+
+        scores = {
+            'C1': int(input_df['C1_Subj_Sleep_Quality'].iloc[0]),
+            'C2': int(input_df['C2_Sleep_Latency'].iloc[0]),
+            'C3': int(input_df['C3_Sleep_Duration'].iloc[0]),
+            'C4': int(input_df['C4_Sleep_Efficiency'].iloc[0]),
+            'C5': int(input_df['C5_Sleep_Disturbance'].iloc[0]),
+            'C6': int(input_df['C6_Meds_Use'].iloc[0]),
+            'C7': int(input_df['C7_Day_Dysfunction'].iloc[0])
+        }
+
+        # Cari komponen dengan skor tertinggi
+        highest_c = max(scores, key=scores.get)
+
+        # Gabungkan semua data untuk respons akhir
+        response_data = {
+            'kualitas_tidur_prediksi': prediction[0],
+            'komponen_tertinggi': highest_c,
+            'scores': scores
+        }
         
-        return jsonify({'kualitas_tidur_prediksi': prediction[0]})
+        return jsonify(response_data)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-# 5. Jalankan Aplikasi
+# Jalankan Aplikasi
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
